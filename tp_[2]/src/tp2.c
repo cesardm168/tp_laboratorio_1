@@ -8,91 +8,134 @@
  ============================================================================
  */
 
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "ArrayPassenger.h"
-#include "validaciones.h"
-#include "tipo.h"
-#include "estado.h"
+#include <ctype.h>
+#include <string.h>
+
+#include "utn_validaciones.h"
+#include "arrayPassenger.h"
 
 #define TAM 2000
-#define TAMT 4
-#define TAME 4
 
 int main(void) {
-	setbuf(stdout, NULL);
-	char salir = 'n';
-	int proximoId = 6000;
-	int flagPassenger = 0;
-	int flagDos=0;
 
-	ePassenger pasajeros[TAM];
+	    setbuf(stdout,NULL);
 
-	eTipo tipos[TAMT] = {
-			{ 5000, "Primera Clase" },
-			{ 5001, "Turista" },
-			{ 5002, "Economica" },
-			{ 5003, "Ejecutiva" },
-	};
+		char salir = 'n';
+	    int flagAltas = 0;
+	    int nextId = 10000;
 
-	eEstado estados[TAME] = {
-			{ 7000, "Activo" },
-			{ 7001, "Demorado" },
-			{ 7002, "Reprogramado" },
-			{ 7003, "Cancelado" }, };
+	    int id = 0;
+	    char name[51];
+	    char lastName[51];
+	    float price = 0;
+	    char flycode[10];
+	    int typePassenger = 0;
+	    int statusFlight = 0;
 
-	initPassenger(pasajeros, TAM);
+	    int orden;
+	    int opcion;
 
-	do {
-		switch (menu()) {
-		case 1:
-			if (loadPassenger(pasajeros, TAM, tipos, TAMT, estados, TAME, &proximoId)) {
-				printf("Pasajero agregado con exito!!!\n");
-			} else {
-				printf("Problema al hacer el alta de Pasajero");
-			}
-			flagPassenger = 1;
-			break;
-		case 2:
-			 if(flagPassenger ){
-			if (modifyPassenger(pasajeros, TAM, tipos, TAMT, estados, TAM)== 0) {
-				printf("Problema al hacer la baja de Pasajero\n");
-				flagDos=1;
-			}
-			 }else{
-				 printf("No se cargo ningun Pasajero\n");
-			 }
+	    ePassenger pasajeros[TAM] =
+	    {
+	        {10000,"lucas", "Viatri",14500,"qwert12345",1,1,0},
+	        {10001,"Rogelio", "funes",200000,"poiuyt987",2,2,0},
+	        {10002,"felipe", "niksevich",600000,"d2d32d375d",1,3,0},
+	        {10003,"valentin", "costa",400000,"b3b2bbbb5b",1,3,0},
+	        {10004,"yanzon", "nicolas",100000,"e2e3ee45ee",3,2,0},
+	        {10005,"telma", "malano",300000,"f3f376ff8f",2,1,0}
+	    };
 
-			break;
-		case 3:
-			 if(flagDos){
-				if (removePassenger(pasajeros, TAM, tipos, TAMT, estados, TAM)== 0) {
-					printf("Problema al hacer la baja de Pasajero\n");
-				 }
-			flagPassenger=1;
-			flagDos = 1;
-						 }else{
-							 printf("No se cargo ningun Pasajero\n");
-		    }
-			break;
-		case 4:
-			if(flagPassenger ||flagDos){
-			reportPassenger(pasajeros,TAM);
-			}else{
-			 printf("No se cargo ningun Pasajero\n");
-			}
-			break;
-		case 5:
-			hardcodePassengers(pasajeros, TAM,10, &proximoId);
-			break;
+	    initPassenger(pasajeros, TAM);
 
-		case 10:
-			salir = 's';
-			break;
-		default:
-			printf("La Opcion ingresada es incorrecta\n");
-		}
-		system("pause");
-	} while (salir != 's');
 
+
+	    do
+	    {
+	        switch(menu())
+	        {
+	        case 1:
+	            if(addPassenger(pasajeros, TAM,id,name,lastName,price,typePassenger,flycode,&nextId,statusFlight)==0)
+	            {
+	                printf("Error al dar de alta!!\n");
+	            }
+	            else
+	            {
+	                printf("\nAlta exitosa!!\n");
+	                flagAltas = 1;
+	            }
+	            break;
+	        case 2:
+	            if(flagAltas == 0)
+	            {
+	                printf("Error. Para realizar una MODIFICACION, primero debe dar de ALTA!!\n");
+	            }
+	            else
+	            {
+	                modifyPassenger(pasajeros, TAM);
+	            }
+	            break;
+	        case 3:
+	            if(flagAltas == 0)
+	            {
+	                printf("Error. Para realizar una BAJA, primero debe dar de ALTA!!\n");
+	            }
+	            else
+	            {
+	                removePassenger(pasajeros,TAM,id);
+	            }
+	            break;
+	        case 4:
+	            if(flagAltas == 0)
+	            {
+	                printf("Error. Para INFORMAR pasajeros, primero debe dar de ALTA!!\n");
+	            }
+	            else
+	            {
+	            	printf("______________________________________________________________________________\n");
+	            	printf("|                                                                             |\n");
+	            	printf("|                                    INFORMES                                 |\n");
+	            	printf("|_____________________________________________________________________________|\n");
+	            	printf("|                                                                             |\n");
+	            	printf("| 1- Listado por Apellido y Tipo de pasajero.                                 |\n");
+	                printf("| 2- Total y promedio de Precios y cuantos pasajeros que superan el promedio. |\n");
+	                printf("| 3- Listado por codigo de vuelo y vuelos ACTIVOS.                            |\n");
+	                printf("|_____________________________________________________________________________|\n");
+
+	                utn_getInt("Ingrese una opcion: ", "Error. Ingrese una opcion valida.",1,4,100, &opcion);
+
+	                switch(opcion)
+	                {
+	                case 1:
+	                    utn_getInt("Ingrese orden (1 ASC / 0 DESC): ", "Error. Ingrese una opcion valida.",0,1,100, &orden);
+	                    system("cls");
+	                    sortPassenger(pasajeros, TAM,orden);
+	                    break;
+
+	                case 2:
+	                    calcularPromedios(pasajeros, TAM);
+	                    break;
+
+	                case 3:
+	                    utn_getInt("Ingrese orden (1 ASC / 0 DESC): ", "Error. Ingrese una opcion valida.",0,1,100, &orden);
+	                    system("cls");
+	                    sortPassengersByCode(pasajeros,TAM,orden);
+	                    listActivePassenger(pasajeros, TAM);
+	                    break;
+	                }
+	            }
+	            break;
+	        case 5:
+	            salir = 's';
+	            printf("Salida exitosa!!\n");
+	            break;
+	        }
+
+	        system("pause");
+	    }
+	    while(salir != 's');
+
+	return EXIT_SUCCESS;
 }
