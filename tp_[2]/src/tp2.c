@@ -38,15 +38,7 @@ int main(void) {
 	    int orden;
 	    int opcion;
 
-	    ePassenger pasajeros[TAM] =
-	    {
-	        {10000,"lucas", "Viatri",14500,"qwert12345",1,1,0},
-	        {10001,"Rogelio", "funes",200000,"poiuyt987",2,2,0},
-	        {10002,"felipe", "niksevich",600000,"d2d32d375d",1,3,0},
-	        {10003,"valentin", "costa",400000,"b3b2bbbb5b",1,3,0},
-	        {10004,"yanzon", "nicolas",100000,"e2e3ee45ee",3,2,0},
-	        {10005,"telma", "malano",300000,"f3f376ff8f",2,1,0}
-	    };
+	    ePassenger pasajeros[TAM] ;
 
 	    initPassenger(pasajeros, TAM);
 
